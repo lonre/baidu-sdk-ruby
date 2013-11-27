@@ -1,0 +1,24 @@
+{
+  "task_info": {
+    "22223333": {
+      "source_url": "http://test.com/1.dmg",
+      "finished_size": "15321458",
+      "save_path": "/apps/Backups/1.dmg",
+      "rate_limit": "0",
+      "timeout": "3600",
+      "callback": "",
+      "status": "0",
+      "create_time": "1384272276",
+      "task_name": "1.dmg",
+      "od_type": "0",
+      "file_list": [
+        {
+          "file_name": "1.dmg",
+          "file_size": "15321458"
+        }
+      ],
+      "result": 0
+    }
+  },
+  "request_id": 541910000
+}

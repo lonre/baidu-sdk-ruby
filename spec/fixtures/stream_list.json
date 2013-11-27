@@ -1,0 +1,16 @@
+{
+  "total" : 13,
+  "start" : 0,
+  "limit" : 1,
+  "list" : [
+    {
+      "path" : "/apps/album/1.jpg",
+      "size" : 372121,
+      "ctime" : 1234567890,
+      "mtime" : 1234567890,
+      "md5" : "cb123afcc12453543ef",
+      "fs_id" : 12345,
+      "isdir" : 0
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+#EXTM3U
+#EXT-X-TARGETDURATION:15
+#EXT-X-CYBERTRANDURATION:1446
+#EXTINF:3,
+http://nj.cybertran.baidu.com/video/videotran.ts?src_user_id=00000&src_fs_id=1717&msgtype=nanjing&bucket=videotran&output_format=2048&local=1&addr=00000&start=0&len=132916&src=1025.m3u8-0.ts
