@@ -20,9 +20,8 @@ module Baidu
         # 如果用户在此页面同意授权，授权服务则将重定向用户浏览器到应用所指定的“redirect_uri”，
         # 并附带上表示授权服务所分配的 Authorization Code 的 +code+ 参数，以及 state 参数（如果请求authorization code时带了这个参数）。
         #
-        # @param [String] code 所获得的 Authorization Code (redirect_uri 附带的 {code} 参数)
+        # @param [String] code 所获得的 Authorization Code (redirect_uri 附带的 code 参数)
         # @return [Baidu::Session]
-        # @see #user_and_device_code
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device 通过Device Code获取Access Token
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/overview Access Token生命周期
         def get_token(code, redirect_uri); super end
