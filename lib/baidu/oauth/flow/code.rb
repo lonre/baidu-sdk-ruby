@@ -46,12 +46,7 @@ module Baidu
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/list 权限列表
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/set 页面设置
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/redirect 授权回调地址
-        def authorize_url(redirect_uri, params={})
-          opts = {}.update(params)
-          opts.update({ force_login: 1 })   if params[:force_login]
-          opts.update({ confirm_login: 1 }) if params[:confirm_login]
-          super redirect_uri, opts
-        end
+        def authorize_url(redirect_uri, params={}); super end
 
         private
 

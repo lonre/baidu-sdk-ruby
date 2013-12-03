@@ -2,6 +2,7 @@
 
 require 'baidu/oauth/flow/code'
 require 'baidu/oauth/flow/device'
+require 'baidu/oauth/flow/implicit'
 
 module Baidu
   module OAuth
@@ -35,7 +36,7 @@ module Baidu
       #   @return [Flow::Device]
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/authorization Authorization Code
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device Device
-      [:code, :device].each do |flow|
+      [:code, :device, :implicit].each do |flow|
         define_method("#{flow}_flow".to_sym) do
           Baidu::OAuth::Flow.const_get(flow.capitalize).new self
         end

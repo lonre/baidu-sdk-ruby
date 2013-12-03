@@ -44,25 +44,46 @@ describe Baidu::OAuth::Client do
   end
 
   context '#authorize_url' do
-    it 'generates "Authorization Code" authorize url' do
-      url = @client.code_flow.authorize_url('oob')
-      expect(url).to eq("#{authorization_endpoint}?response_type=code&display=page&" \
-                        "client_id=ci&redirect_uri=oob")
+    context 'with code flow' do
+      it 'generates "Authorization Code" authorize url' do
+        url = @client.code_flow.authorize_url('oob')
+        expect(url).to eq("#{authorization_endpoint}?response_type=code&display=page&" \
+                          "client_id=ci&redirect_uri=oob")
+      end
+
+      it 'generates "Authorization Code" authorize url with params' do
+        url = @client.code_flow.authorize_url('http://www.example.com/oauth_redirect',
+                                                scope: 'email', state: 'xyz', display: 'tv',
+                                                force_login: true, confirm_login: true)
+        expect(url).to eq("#{authorization_endpoint}?response_type=code&display=tv&" \
+                          "scope=email&state=xyz&force_login=1&confirm_login=1&client_id=ci&" \
+                          "redirect_uri=http%3A%2F%2Fwww.example.com%2Foauth_redirect")
+      end
     end
 
-    it 'generates "Authorization Code" authorize url with params' do
-      url = @client.code_flow.authorize_url('http://www.example.com/oauth_redirect',
-                                              scope: 'email', state: 'xyz', display: 'tv',
-                                              force_login: 1, confirm_login: 1)
-      expect(url).to eq("#{authorization_endpoint}?response_type=code&display=tv&" \
-                        "scope=email&state=xyz&force_login=1&confirm_login=1&client_id=ci&" \
-                        "redirect_uri=http%3A%2F%2Fwww.example.com%2Foauth_redirect")
+    context 'with device flow' do
+      it 'raises error when using device flow' do
+        expect {
+          @client.device_flow.authorize_url
+        }.to raise_error(NoMethodError, 'no such method in device flow')
+      end
     end
 
-    it 'raises error when using device flow' do
-      expect {
-        @client.device_flow.authorize_url
-      }.to raise_error(NoMethodError, 'no such method in device flow')
+    context 'with implicit flow' do
+      it 'generates "Implicit Grant" authorize url' do
+        url = @client.implicit_flow.authorize_url('oob')
+        expect(url).to eq("#{authorization_endpoint}?response_type=token&display=page&" \
+                          "client_id=ci&redirect_uri=oob")
+      end
+
+      it 'generates "Implicit Grant" authorize url with params' do
+        url = @client.implicit_flow.authorize_url('http://www.example.com/oauth_redirect',
+                                                scope: 'basic email', state: 'xyz', display: 'mobile',
+                                                force_login: true, confirm_login: true)
+        expect(url).to eq("#{authorization_endpoint}?response_type=token&display=mobile&" \
+                          "scope=basic+email&state=xyz&force_login=1&confirm_login=1&client_id=ci&" \
+                          "redirect_uri=http%3A%2F%2Fwww.example.com%2Foauth_redirect")
+      end
     end
   end
 
@@ -155,6 +176,14 @@ describe Baidu::OAuth::Client do
         expect(result).to respond_to(:scope)
         expect(result).to respond_to(:session_key)
         expect(result).to respond_to(:session_secret)
+      end
+    end
+
+    context 'with implicit flow' do
+      it 'raises error' do
+        expect {
+          @client.implicit_flow.get_token
+        }.to raise_error(NoMethodError, 'no such method in implicit grant flow')
       end
     end
   end

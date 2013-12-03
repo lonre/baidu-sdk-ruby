@@ -16,6 +16,8 @@ module Baidu
         def authorize_url(redirect_uri, params={})
           query = authorize_query.update params
           query.update({ client_id: self.client.client_id, redirect_uri: redirect_uri })
+          query.update({ force_login: 1 })   if params[:force_login]
+          query.update({ confirm_login: 1 }) if params[:confirm_login]
           Util.clean_params query
           uri = URI(self.client.site)
           uri.path  = authorize_endpoint
