@@ -12,8 +12,8 @@ module Baidu
       # @note 使用此授权流程，对于终端类型的应用也非常方便，同时还可以获取 Refresh Token
       #
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device Device授权
-      class Device
-        include Base
+      class Device < Base
+        include Tokenable
 
         # 获取 User Code 和 Device Code
         # @example 返回的原始 JSON
@@ -36,11 +36,12 @@ module Baidu
         #
         # @param [String] scope 非必须参数，以空格分隔的权限列表
         # @return [Hash]
+        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device Device授权
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/list 权限列表
         def user_and_device_code(scope=nil)
           query = authorize_query.update({ client_id: self.client.client_id })
           query[:scope] = scope unless scope.nil?
-          self.client.get(authorize_endpoint, query)
+          self.client.get(Baidu::OAuth::DEVICE_ENDPOINT, query)
         end
 
         # 通过 Device Code 来获取 Access Token
@@ -48,14 +49,9 @@ module Baidu
         # @param [String] code {#user_and_device_code} 所获得的 Device Code
         # @return [Baidu::Session]
         # @see #user_and_device_code
-        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device 通过Device Code获取Access Token
+        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device Device授权
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/overview Access Token生命周期
         def get_token(code); super end
-
-        # @private
-        def authorize_url
-          raise NoMethodError, 'no such method in device flow'
-        end
 
         private
 
@@ -65,10 +61,6 @@ module Baidu
 
         def token_body
           { grant_type: 'device_token' }
-        end
-
-        def authorize_endpoint
-          Baidu::OAuth::DEVICE_ENDPOINT
         end
       end
     end

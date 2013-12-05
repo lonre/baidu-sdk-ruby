@@ -12,22 +12,18 @@ module Baidu
       # 对于应用而言，其流程只有一步，即直接获取Access Token。
       #
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/client Client Credentials授权
-      class ClientCredentials
-        include Base
+      class ClientCredentials < Base
+        include Tokenable
 
         # 使用 Client Credentials 获取 Access Token
         #
         # @param [String] scope Access Token最终的访问范围，即用户实际授予的权限列表
         # @return [Baidu::Session]
+        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/client Client Credentials授权
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/list 权限列表
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/overview Access Token生命周期
         def get_token(scope=nil)
           super(nil, nil, scope: scope)
-        end
-
-        # @private
-        def authorize_url(redirect_uri, params={})
-          raise NoMethodError, 'no such method in client credentials flow'
         end
 
         private

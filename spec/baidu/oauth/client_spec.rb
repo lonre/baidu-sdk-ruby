@@ -61,14 +61,6 @@ describe Baidu::OAuth::Client do
       end
     end
 
-    context 'with device flow' do
-      it 'raises error when using device flow' do
-        expect {
-          @client.device_flow.authorize_url
-        }.to raise_error(NoMethodError, 'no such method in device flow')
-      end
-    end
-
     context 'with implicit flow' do
       it 'generates "Implicit Grant" authorize url' do
         url = @client.implicit_flow.authorize_url('oob')
@@ -177,14 +169,6 @@ describe Baidu::OAuth::Client do
         expect(result).to respond_to(:session_key)
         expect(result).to respond_to(:session_secret)
       end
-    end
-  end
-
-  context 'with implicit flow' do
-    it 'raises error' do
-      expect {
-        @client.implicit_flow.get_token
-      }.to raise_error(NoMethodError, 'no such method in implicit grant flow')
     end
   end
 

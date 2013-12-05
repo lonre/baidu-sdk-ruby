@@ -19,13 +19,8 @@ module Baidu
       #
       # @todo 验证接口
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/implicit Implicit Grant授权
-      class Implicit
-        include Base
-
-        # @private
-        def get_token
-          raise NoMethodError, 'no such method in implicit grant flow'
-        end
+      class Implicit < Base
+        include Authable
 
         # 获取 Authorization URL
         #
@@ -45,6 +40,7 @@ module Baidu
         # @option params [Boolean] :force_login +true+ 表示加载登录页时强制用户输入用户名和口令，不会从cookie中读取百度用户的登陆状态
         # @option params [Boolean] :confirm_login +true+ 表示且百度用户已处于登陆状态，会提示是否使用已当前登陆用户对应用授权
         # @return [String]
+        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/implicit Implicit Grant授权
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/list 权限列表
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/set 页面设置
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/redirect 授权回调地址
