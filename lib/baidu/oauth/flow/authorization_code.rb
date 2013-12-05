@@ -10,7 +10,7 @@ module Baidu
       # 适用于所有有Server端的应用，如Web/Wap站点、有Server端的手机/桌面客户端应用等。
       #
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/authorization Authorization Code授权
-      class Code < Base
+      class AuthorizationCode < Base
         include Authable
         include Tokenable
 

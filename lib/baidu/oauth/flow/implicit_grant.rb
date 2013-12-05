@@ -19,7 +19,7 @@ module Baidu
       #
       # @see Client#token_info
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/implicit Implicit Grant授权
-      class Implicit < Base
+      class ImplicitGrant < Base
         include Authable
 
         # 获取 Authorization URL

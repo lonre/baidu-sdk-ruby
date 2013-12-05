@@ -46,13 +46,13 @@ describe Baidu::OAuth::Client do
   context '#authorize_url' do
     context 'with code flow' do
       it 'generates "Authorization Code" authorize url' do
-        url = @client.code_flow.authorize_url('oob')
+        url = @client.authorization_code_flow.authorize_url('oob')
         expect(url).to eq("#{authorization_endpoint}?response_type=code&display=page&" \
                           "client_id=ci&redirect_uri=oob")
       end
 
       it 'generates "Authorization Code" authorize url with params' do
-        url = @client.code_flow.authorize_url('http://www.example.com/oauth_redirect',
+        url = @client.authorization_code_flow.authorize_url('http://www.example.com/oauth_redirect',
                                                 scope: 'email', state: 'xyz', display: 'tv',
                                                 force_login: true, confirm_login: true)
         expect(url).to eq("#{authorization_endpoint}?response_type=code&display=tv&" \
@@ -63,13 +63,13 @@ describe Baidu::OAuth::Client do
 
     context 'with implicit flow' do
       it 'generates "Implicit Grant" authorize url' do
-        url = @client.implicit_flow.authorize_url('oob')
+        url = @client.implicit_grant_flow.authorize_url('oob')
         expect(url).to eq("#{authorization_endpoint}?response_type=token&display=page&" \
                           "client_id=ci&redirect_uri=oob")
       end
 
       it 'generates "Implicit Grant" authorize url with params' do
-        url = @client.implicit_flow.authorize_url('http://www.example.com/oauth_redirect',
+        url = @client.implicit_grant_flow.authorize_url('http://www.example.com/oauth_redirect',
                                                 scope: 'basic email', state: 'xyz', display: 'mobile',
                                                 force_login: true, confirm_login: true)
         expect(url).to eq("#{authorization_endpoint}?response_type=token&display=mobile&" \
@@ -125,7 +125,7 @@ describe Baidu::OAuth::Client do
       end
 
       it 'requests access tokey' do
-        @client.code_flow.get_token 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
+        @client.authorization_code_flow.get_token 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
                                      'http://www.example.com/oauth_redirect'
         a_post(:oauth, '/oauth/2.0/token',
                 grant_type: 'authorization_code',
@@ -135,7 +135,7 @@ describe Baidu::OAuth::Client do
       end
 
       it 'responses access token' do
-        result = @client.code_flow.get_token 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
+        result = @client.authorization_code_flow.get_token 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
                                               'http://www.example.com/oauth_redirect'
         expect(result).to be_instance_of(Baidu::Session)
         expect(result).to respond_to(:access_token)
