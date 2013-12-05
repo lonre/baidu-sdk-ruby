@@ -10,6 +10,7 @@ module Baidu
       # 填写User Code并授权、以及通过Device Code获取Access Token这3步组成。
       #
       # @note 使用此授权流程，对于终端类型的应用也非常方便，同时还可以获取 Refresh Token
+      #
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device Device授权
       class Device
         include Base

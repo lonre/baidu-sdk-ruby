@@ -3,6 +3,7 @@
 module Baidu
   module OAuth
     module Flow
+      # @private
       module Base
         include Baidu::Support
 

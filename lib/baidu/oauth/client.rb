@@ -3,6 +3,7 @@
 require 'baidu/oauth/flow/code'
 require 'baidu/oauth/flow/device'
 require 'baidu/oauth/flow/implicit'
+require 'baidu/oauth/flow/client_credentials'
 
 module Baidu
   module OAuth
@@ -31,14 +32,27 @@ module Baidu
       # @!method code_flow
       #   采用 Authorization Code 获取 Access Token 的授权验证流程
       #   @return [Flow::Code]
+      #
       # @!method device_flow
       #   采用 Device Code 获取 Access Token 的授权验证流程
       #   @return [Flow::Device]
-      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/authorization Authorization Code
-      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device Device
-      [:code, :device, :implicit].each do |flow|
+      #
+      # @!method implicit_flow
+      #   采用 Implicit Grant 方式获取 Access Token 的授权验证流程
+      #   @return [Flow::Implicit]
+      #
+      # @!method client_credentials_flow
+      #   使用 Client Credentials 获取 Access Token 的授权验证流程
+      #   @return [Flow::ClientCredentials]
+      #
+      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/authorization Authorization Code 授权
+      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device Device 授权
+      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/implicit Implicit Grant 授权
+      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/client Client Credentials 授权
+      [:code, :device, :implicit, :client_credentials].each do |flow|
         define_method("#{flow}_flow".to_sym) do
-          Baidu::OAuth::Flow.const_get(flow.capitalize).new self
+          klass_name = flow.to_s.split('_').map { |s| s.capitalize }.join
+          Baidu::OAuth::Flow.const_get(klass_name).new self
         end
       end
 

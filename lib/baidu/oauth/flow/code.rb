@@ -13,7 +13,7 @@ module Baidu
       class Code
         include Base
 
-        # 通过 Device Code 来获取 Access Token
+        # 通过获得的 Authorization Code，换取一个 Access Token
         #
         # @note 每一个 Authorization Code 的有效期为10分钟，并且只能使用一次，再次使用将无效。
         #
@@ -21,8 +21,9 @@ module Baidu
         # 并附带上表示授权服务所分配的 Authorization Code 的 +code+ 参数，以及 state 参数（如果请求authorization code时带了这个参数）。
         #
         # @param [String] code 所获得的 Authorization Code (redirect_uri 附带的 code 参数)
+        # @param [String] redirect_uri 该值必须与获取 Authorization Code 时传递的 “redirect_uri” 保持一致
         # @return [Baidu::Session]
-        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/device 通过Device Code获取Access Token
+        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/authorization Authorization Code授权
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/overview Access Token生命周期
         def get_token(code, redirect_uri); super end
 
@@ -43,6 +44,7 @@ module Baidu
         # @option params [Boolean] :force_login +true+ 表示加载登录页时强制用户输入用户名和口令，不会从cookie中读取百度用户的登陆状态
         # @option params [Boolean] :confirm_login +true+ 表示且百度用户已处于登陆状态，会提示是否使用已当前登陆用户对应用授权
         # @return [String]
+        # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/authorization Authorization Code授权
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/list 权限列表
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/set 页面设置
         # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/redirect 授权回调地址

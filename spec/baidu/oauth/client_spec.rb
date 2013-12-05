@@ -161,7 +161,7 @@ describe Baidu::OAuth::Client do
           to_return(status: 200, body: ft('get_token_device.json'))
       end
 
-      it 'requests access tokey' do
+      it 'requests access token' do
         @client.device_flow.get_token 'a82hjs723h72h3a82hjs723h72h3vb'
         a_post(:oauth, '/oauth/2.0/token', grant_type: 'device_token',
                code: 'a82hjs723h72h3a82hjs723h72h3vb',
@@ -178,13 +178,43 @@ describe Baidu::OAuth::Client do
         expect(result).to respond_to(:session_secret)
       end
     end
+  end
 
-    context 'with implicit flow' do
-      it 'raises error' do
-        expect {
-          @client.implicit_flow.get_token
-        }.to raise_error(NoMethodError, 'no such method in implicit grant flow')
-      end
+  context 'with implicit flow' do
+    it 'raises error' do
+      expect {
+        @client.implicit_flow.get_token
+      }.to raise_error(NoMethodError, 'no such method in implicit grant flow')
+    end
+  end
+
+  context 'with client credentials' do
+    let(:base_params) do
+      { grant_type: 'client_credentials', client_id: 'ci', client_secret: 'cs' }
+    end
+
+    it 'requests access token' do
+      stub = stub_post(:oauth, '/oauth/2.0/token', base_params)
+      @client.client_credentials_flow.get_token
+      stub.should have_been_requested
+    end
+
+    it 'requests access token with scope' do
+      stub = stub_post(:oauth, '/oauth/2.0/token', base_params.update({ scope: 'basic hao123' }))
+      @client.client_credentials_flow.get_token('basic hao123')
+      stub.should have_been_requested
+    end
+
+    it 'responses access token' do
+      stub = stub_post(:oauth, '/oauth/2.0/token', base_params).
+        to_return(status: 200, body: ft('get_token_client_credentials.json'))
+      result = @client.client_credentials_flow.get_token
+      expect(result).to be_instance_of(Baidu::Session)
+      expect(result).to respond_to(:access_token)
+      expect(result).to respond_to(:refresh_token)
+      expect(result).to respond_to(:scope)
+      expect(result).to respond_to(:session_key)
+      expect(result).to respond_to(:session_secret)
     end
   end
 
