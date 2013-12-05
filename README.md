@@ -69,20 +69,30 @@ result[:used]   # => 5221166
     ```
     后者创建的实例受全局配置影响
 
-3. Baidu OAuth 有四种（当前实现两种）获取 Access Token 的方式，包括 `Authorization Code`, `Implicit Grant`, `Client Credentials`, `Device`以及一个刷新方式`Refresh Token`
+3. Baidu OAuth 有四种获取 Access Token 的方式，包括 `Authorization Code`, `Implicit Grant`, `Client Credentials`, `Device`以及一个刷新方式`Refresh Token`
 
     ```ruby
     # 使用 Authorization Code 授权流程，获取 Authorization URL
-    client.code_flow.authorize_url('callback_uri')
+    client.authorization_code_flow.authorize_url('callback_uri')
 
     # 使用 Authorization Code 授权流程，获取 Access Token（Baidu::Session）
-    client.code_flow.get_token('code', 'callback_uri')
+    client.authorization_code_flow.get_token('code', 'callback_uri')
 
     # 使用 Device 授权流程，获取 User Code 和 Device Code
     client.device_flow.user_and_device_code
 
     # 使用 Device 授权流程，获取 Access Token（Baidu::Session）
     client.device_flow.get_token('code')
+
+    # 使用 Implicit Grant 授权流程
+    client.implicit_grant_flow.authorize_url('callback_uri')
+
+    # 使用 Implicit Grant 授权流程授权后，
+    # 客户端解析 callback_uri 中 Fragment 所携带参数获取 Access Token
+    # http://localhost:4567/auth/callback#expires_in=2592000&access_token=3.c79b45...
+
+    # 使用 Client Credentials 授权流程获取 Access Token
+    client.client_credentials_flow.get_token
 
     # 刷新并获取新的 Access Token（Baidu::Session），所有流程均适用
     client.refresh('refresh_token')
@@ -125,13 +135,13 @@ end
 
 get '/auth' do
   client = Baidu::OAuth::Client.new
-  redirect client.code_flow.authorize_url(callback_uri, confirm_login: true)
+  redirect client.authorization_code_flow.authorize_url(callback_uri, confirm_login: true)
 end
 
 get '/auth/callback' do
   begin
     client = Baidu::OAuth::Client.new
-    session = client.code_flow.get_token params[:code], callback_uri
+    session = client.authorization_code_flow.get_token params[:code], callback_uri
     "auth success: #{session.access_token}"
   rescue => e
     e.to_s
