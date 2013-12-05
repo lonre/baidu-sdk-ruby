@@ -17,7 +17,7 @@ module Baidu
       #   为了保证安全性，建议应用从授权回调地址接收到Access Token之后，
       #   调用Access Token验证接口判断该Access Token是否对应自身的Api Key。
       #
-      # @todo 验证接口
+      # @see Client#token_info
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/implicit Implicit Grant授权
       class Implicit < Base
         include Authable

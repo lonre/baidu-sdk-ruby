@@ -76,6 +76,34 @@ module Baidu
         return nil if rest.nil?
         Baidu::Session.from rest
       end
+
+      # 查询Access Token对应的授权信息
+      #
+      # 该接口用于查询Access Token对应的授权相关信息，
+      # 包括授权对象(应用)、授权用户、授权的权限、授权时间，过期时间。
+      # @example 返回的原始 JSON
+      #   {
+      #       "client_id": "ZLycGmiUcCkrSb3t7zSD8uV6",
+      #       "userid": 689911016,
+      #       "scope": "basic super_msg",
+      #       "create_time": 1364555477,
+      #       "expire_in": 2591980
+      #   }
+      #
+      #   :client_id   Access Token对应应用的Api Key
+      #   :userid      授权用户的唯一id。如果Access Token是通过Client Credentials授权方式 获取的，则该字段值为0
+      #   :scope       Access Token最终的访问范围，即用户实际授予的权限列表（用户在授权页面时，有可能会取消掉某些请求的权限）
+      #   :create_time Access Token的生成时间(Unix时间戳)，以秒为单位
+      #   :expires_in  Access Token剩余的有效时间，以秒为单位
+      #
+      # @param [String] access_token 授权之后应用得到的Access Token
+      # @return [Hash]
+      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/tokeninfo 校验Access Token
+      # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/list 权限列表
+      def token_info(access_token)
+        body = { access_token: access_token }
+        return post Baidu::OAuth::TOKEN_INFO_ENDPOINT, nil, body
+      end
     end
   end
 end

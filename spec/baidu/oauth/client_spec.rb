@@ -239,4 +239,14 @@ describe Baidu::OAuth::Client do
       expect(result).to respond_to(:session_secret)
     end
   end
+
+  context '#token_info' do
+    it 'requests token info' do
+      stub = stub_post(:oauth, '/oauth/2.0/tokeninfo', access_token: 'xxxx').
+          to_return(status: 200, body: ft('token_info.json'))
+      rest = @client.token_info('xxxx')
+      stub.should have_been_requested
+      expect(rest).to be_instance_of(Hash)
+    end
+  end
 end
