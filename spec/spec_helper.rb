@@ -35,6 +35,7 @@ end
 def webmock_url(mod, path)
   case mod
   when :oauth        then "https://openapi.baidu.com#{path}"
+  when :oauth_rest   then "https://openapi.baidu.com/rest/2.0#{path}"
   when :pcs          then "https://pcs.baidu.com/rest/2.0/pcs#{path}"
   when :pcs_upload   then "https://c.pcs.baidu.com/rest/2.0/pcs#{path}"
   when :pcs_download then "https://d.pcs.baidu.com/rest/2.0/pcs#{path}"
