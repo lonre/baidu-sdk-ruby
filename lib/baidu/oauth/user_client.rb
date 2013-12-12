@@ -19,6 +19,14 @@ module Baidu
         post "#{BASE_PATH}/passport/users/getLoggedInUser", nil, base_query
       end
 
+      def get_info(options={})
+        body          = base_query
+        body[:uid]    = options[:uid]
+        body[:fields] = options[:fields]
+
+        post "#{BASE_PATH}/passport/users/getInfo", nil, body
+      end
+
       private
 
       def base_query

@@ -45,5 +45,27 @@ module Baidu
         stub.should have_been_requested
       end
     end
+
+    describe '#get_info' do
+      it 'requests current user info' do
+        stub = stub_post(:oauth_rest, '/passport/users/getInfo', base_query)
+        @client.get_info
+        stub.should have_been_requested
+      end
+
+      it 'requests specified user info' do
+        stub = stub_post(:oauth_rest, '/passport/users/getInfo', base_query.update({ uid: '123456' }))
+        @client.get_info(uid: '123456')
+        stub.should have_been_requested
+      end
+
+      it 'requests with fields' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/getInfo',
+                         base_query.update({ uid: '654321', fields: 'realname,portrait' }))
+        @client.get_info(uid: '654321', fields: 'realname,portrait')
+        stub.should have_been_requested
+      end
+    end
   end
 end
