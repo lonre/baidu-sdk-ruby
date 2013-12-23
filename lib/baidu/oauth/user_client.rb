@@ -45,6 +45,18 @@ module Baidu
         rest[:result] == '1'
       end
 
+      def has_app_permissions(ext_perms, uid=nil)
+        body             = base_query
+        body[:ext_perms] = ext_perms
+        if ext_perms.is_a? Array
+          body[:ext_perms] = ext_perms.join ','
+        end
+        body[:uid]       = uid
+
+        rest = post "#{BASE_PATH}/passport/users/hasAppPermissions", nil, body
+        rest.each { |k, v| rest[k] = v == '1' }
+      end
+
       private
 
       def base_query

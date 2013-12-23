@@ -117,5 +117,39 @@ module Baidu
         expect(rest).to be_false
       end
     end
+
+    describe '#has_app_permissions' do
+      it 'requests "hasAppPermissions" api' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/hasAppPermissions',
+                         base_query.update({ ext_perms: 'netdisk,basic' }))
+        stub.to_return(body: '{"basic":"1", "netdisk":"0"}')
+        rest = @client.has_app_permissions 'netdisk,basic'
+        stub.should have_been_requested
+        expect(rest[:basic]).to   be_true
+        expect(rest[:netdisk]).to be_false
+      end
+
+      it 'requests "hasAppPermissions" api with array of perms' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/hasAppPermissions',
+                         base_query.update({ ext_perms: 'netdisk,basic' }))
+        stub.to_return(body: '{"basic":"1", "netdisk":"0"}')
+        rest = @client.has_app_permissions %w[netdisk basic]
+        stub.should have_been_requested
+        expect(rest[:basic]).to   be_true
+        expect(rest[:netdisk]).to be_false
+      end
+
+      it 'requests "hasAppPermissions" for specified user' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/hasAppPermissions',
+                         base_query.update({ ext_perms: 'super_msg', uid: '456123' }))
+        stub.to_return(body: '{"super_msg":"0"}')
+        rest = @client.has_app_permissions('super_msg', '456123')
+        stub.should have_been_requested
+        expect(rest[:super_msg]).to be_false
+      end
+    end
   end
 end
