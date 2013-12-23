@@ -95,5 +95,27 @@ module Baidu
         expect(rest).to be_false
       end
     end
+
+    describe '#has_app_permission?' do
+      it 'requests "hasAppPermission" api' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/hasAppPermission',
+                         base_query.update({ ext_perm: 'netdisk' }))
+        stub.to_return(body: '{"result":"1"}')
+        rest = @client.has_app_permission? 'netdisk'
+        stub.should have_been_requested
+        expect(rest).to be_true
+      end
+
+      it 'requests "hasAppPermission" for specified user' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/hasAppPermission',
+                         base_query.update({ ext_perm: 'super_msg', uid: '456123' }))
+        stub.to_return(body: '{"result":"0"}')
+        rest = @client.has_app_permission?('super_msg', '456123')
+        stub.should have_been_requested
+        expect(rest).to be_false
+      end
+    end
   end
 end
