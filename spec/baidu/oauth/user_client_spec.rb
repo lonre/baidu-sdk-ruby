@@ -67,5 +67,33 @@ module Baidu
         stub.should have_been_requested
       end
     end
+
+    describe '#app_user?' do
+      it 'requests "isAppUser" api' do
+        stub = stub_post(:oauth_rest, '/passport/users/isAppUser', base_query)
+        @client.app_user?
+        stub.should have_been_requested
+      end
+
+      it 'requests "isAppUser" for specified user' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/isAppUser',
+                         base_query.update({ uid: '456123' }))
+        stub.to_return(body: '{"result":"1"}')
+        rest = @client.app_user?(uid: '456123')
+        stub.should have_been_requested
+        expect(rest).to be_true
+      end
+
+      it 'requests "isAppUser" for specified appid' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/users/isAppUser',
+                         base_query.update({ appid: '341256' }))
+        stub.to_return(body: '{"result":"0"}')
+        rest = @client.app_user?(appid: '341256')
+        stub.should have_been_requested
+        expect(rest).to be_false
+      end
+    end
   end
 end

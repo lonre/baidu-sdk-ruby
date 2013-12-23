@@ -27,6 +27,15 @@ module Baidu
         post "#{BASE_PATH}/passport/users/getInfo", nil, body
       end
 
+      def app_user?(options={})
+        body         = base_query
+        body[:uid]   = options[:uid]
+        body[:appid] = options[:appid]
+
+        rest = post "#{BASE_PATH}/passport/users/isAppUser", nil, body
+        rest[:result] == '1'
+      end
+
       private
 
       def base_query
