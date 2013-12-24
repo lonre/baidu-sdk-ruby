@@ -151,5 +151,30 @@ module Baidu
         expect(rest[:super_msg]).to be_false
       end
     end
+
+    describe '#get_friends' do
+      it 'requests with default params' do
+        stub = stub_post(:oauth_rest, '/friends/getFriends', base_query)
+        @client.get_friends
+        stub.should have_been_requested
+      end
+
+      it 'requests with custom params' do
+        stub = stub_post(:oauth_rest,
+                         '/friends/getFriends',
+                         base_query.update({ page_no: 3, page_size: 10, sort_type: 1 }))
+        @client.get_friends page_no: 3, page_size: 10, sort_type: 1
+        stub.should have_been_requested
+      end
+
+      it 'returns result of an array' do
+        stub = stub_post(:oauth_rest, '/friends/getFriends', base_query.update(page_size: 2))
+        stub.to_return(body: ft('get_friends.json'))
+        rest = @client.get_friends page_size: 2
+        stub.should have_been_requested
+        expect(rest).to be_a Array
+        expect(rest.size).to be(2)
+      end
+    end
   end
 end

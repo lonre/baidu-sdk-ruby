@@ -57,6 +57,11 @@ module Baidu
         rest.each { |k, v| rest[k] = v == '1' }
       end
 
+      # TODO: check return value
+      def get_friends(options={})
+        post "#{BASE_PATH}/friends/getFriends", nil, base_query.update(options)
+      end
+
       private
 
       def base_query
