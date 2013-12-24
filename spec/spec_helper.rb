@@ -44,24 +44,35 @@ end
 
 def stub_get(mod, path, params={})
   req = stub_request :get, webmock_url(mod, path)
-  req.with(query: params) unless params.empty?
+  set_req_params :query, req, params
   req
 end
 
 def stub_post(mod, path, params={})
   req = stub_request :post, webmock_url(mod, path)
-  req.with(body: params) unless params.empty?
+  set_req_params :body, req, params
   req
 end
 
 def a_get(mod, path, params={})
   req = a_request :get, webmock_url(mod, path)
-  req.with(query: params) unless params.empty?
+  set_req_params :query, req, params
   req
 end
 
 def a_post(mod, path, params={})
   req = a_request :post, webmock_url(mod, path)
-  req.with(body: params) unless params.empty?
+  set_req_params :body, req, params
   req
+end
+
+private
+
+def set_req_params(type, req, params)
+  unless params.empty?
+    if params.is_a?(Hash)
+      params = URI.encode_www_form(params)
+    end
+    req.with(Hash[type, params])
+  end
 end

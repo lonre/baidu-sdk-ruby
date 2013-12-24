@@ -82,26 +82,24 @@ describe Baidu::OAuth::Client do
   context '#user_and_device_code' do
 
     it 'requests user and device code' do
-      stub_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci', response_type: 'device_code').
-        to_return(status: 200, body: ft('user_and_device_code.json'))
+      stub = stub_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci', response_type: 'device_code')
+      stub.to_return(status: 200, body: ft('user_and_device_code.json'))
       @client.device_flow.user_and_device_code
-      a_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci', response_type: 'device_code').
-        should have_been_made
+      stub.should have_been_requested
     end
 
     it 'requests user and device code with scope' do
-      stub_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci',
-               response_type: 'device_code', scope: 'basic netdisk').
-        to_return(status: 200, body: ft('user_and_device_code.json'))
+      stub = stub_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci',
+                                                        response_type: 'device_code',
+                                                        scope: 'basic netdisk')
+      stub.to_return(status: 200, body: ft('user_and_device_code.json'))
       @client.device_flow.user_and_device_code 'basic netdisk'
-      a_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci',
-            response_type: 'device_code', scope: 'basic netdisk').
-        should have_been_made
+      stub.should have_been_requested
     end
 
     it 'responses user and device code' do
-      stub_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci', response_type: 'device_code').
-        to_return(status: 200, body: ft('user_and_device_code.json'))
+      stub = stub_get(:oauth, '/oauth/2.0/device/code', client_id: 'ci', response_type: 'device_code')
+      stub.to_return(status: 200, body: ft('user_and_device_code.json'))
       result = @client.device_flow.user_and_device_code
       expect(result).to be_instance_of(Hash)
       expect(result).to have_key(:device_code)
@@ -114,29 +112,26 @@ describe Baidu::OAuth::Client do
   end
 
   context '#get_token' do
-    context 'with code flow' do
-      before do
-        stub_post(:oauth, '/oauth/2.0/token',
-                  grant_type: 'authorization_code',
-                  code: 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
-                  client_id: 'ci', client_secret: 'cs',
-                  redirect_uri: 'http://www.example.com/oauth_redirect').
-          to_return(status: 200, body: ft('get_token_code.json'))
-      end
-
+    context 'with authorization code flow' do
       it 'requests access tokey' do
+        stub = stub_post(:oauth, '/oauth/2.0/token', grant_type: 'authorization_code',
+                                                     client_id: 'ci', client_secret: 'cs',
+                                                     redirect_uri: 'http://www.example.com/oauth_redirect',
+                                                     code: 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn')
+        stub.to_return(status: 200, body: ft('get_token_code.json'))
         @client.authorization_code_flow.get_token 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
-                                     'http://www.example.com/oauth_redirect'
-        a_post(:oauth, '/oauth/2.0/token',
-                grant_type: 'authorization_code',
-                code: 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
-                client_id: 'ci', client_secret: 'cs',
-                redirect_uri: 'http://www.example.com/oauth_redirect').should have_been_made
+                                                  'http://www.example.com/oauth_redirect'
+        stub.should have_been_requested
       end
 
       it 'responses access token' do
+        stub = stub_post(:oauth, '/oauth/2.0/token', grant_type: 'authorization_code',
+                                                     client_id: 'ci', client_secret: 'cs',
+                                                     redirect_uri: 'http://www.example.com/oauth_redirect',
+                                                     code: 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn')
+        stub.to_return(status: 200, body: ft('get_token_code.json'))
         result = @client.authorization_code_flow.get_token 'ANXxSNjwQDugOnqeikRMu2bKaXCdlLxn',
-                                              'http://www.example.com/oauth_redirect'
+                                                           'http://www.example.com/oauth_redirect'
         expect(result).to be_instance_of(Baidu::Session)
         expect(result).to respond_to(:access_token)
         expect(result).to respond_to(:refresh_token)
@@ -147,20 +142,20 @@ describe Baidu::OAuth::Client do
     end
 
     context 'with device flow' do
-      before do
-        stub_post(:oauth, '/oauth/2.0/token', grant_type: 'device_token',
-                  code: 'a82hjs723h72h3a82hjs723h72h3vb', client_id: 'ci', client_secret: 'cs').
-          to_return(status: 200, body: ft('get_token_device.json'))
-      end
-
       it 'requests access token' do
+        stub = stub_post(:oauth, '/oauth/2.0/token', grant_type: 'device_token',
+                                                     client_id: 'ci', client_secret: 'cs',
+                                                     code: 'a82hjs723h72h3a82hjs723h72h3vb')
+        stub.to_return(status: 200, body: ft('get_token_device.json'))
         @client.device_flow.get_token 'a82hjs723h72h3a82hjs723h72h3vb'
-        a_post(:oauth, '/oauth/2.0/token', grant_type: 'device_token',
-               code: 'a82hjs723h72h3a82hjs723h72h3vb',
-               client_id: 'ci', client_secret: 'cs').should have_been_made
+        stub.should have_been_requested
       end
 
       it 'responses access token' do
+        stub = stub_post(:oauth, '/oauth/2.0/token', grant_type: 'device_token',
+                                                     client_id: 'ci', client_secret: 'cs',
+                                                     code: 'a82hjs723h72h3a82hjs723h72h3vb')
+        stub.to_return(status: 200, body: ft('get_token_device.json'))
         result = @client.device_flow.get_token 'a82hjs723h72h3a82hjs723h72h3vb'
         expect(result).to be_instance_of(Baidu::Session)
         expect(result).to respond_to(:access_token)
@@ -184,14 +179,16 @@ describe Baidu::OAuth::Client do
     end
 
     it 'requests access token with scope' do
-      stub = stub_post(:oauth, '/oauth/2.0/token', base_params.update({ scope: 'basic hao123' }))
+      params = { grant_type: 'client_credentials', scope: 'basic hao123',
+                 client_id: 'ci', client_secret: 'cs' }
+      stub = stub_post(:oauth, '/oauth/2.0/token', params)
       @client.client_credentials_flow.get_token('basic hao123')
       stub.should have_been_requested
     end
 
     it 'responses access token' do
-      stub = stub_post(:oauth, '/oauth/2.0/token', base_params).
-        to_return(status: 200, body: ft('get_token_client_credentials.json'))
+      stub = stub_post(:oauth, '/oauth/2.0/token', base_params)
+      stub.to_return(status: 200, body: ft('get_token_client_credentials.json'))
       result = @client.client_credentials_flow.get_token
       expect(result).to be_instance_of(Baidu::Session)
       expect(result).to respond_to(:access_token)
@@ -203,34 +200,31 @@ describe Baidu::OAuth::Client do
   end
 
   context '#refresh_token' do
-    before do
-      stub_post(:oauth, '/oauth/2.0/token', grant_type: 'refresh_token',
-                refresh_token: '2.af3d55f8615fdfd9edb7c4b5ebdc3e32.604800.1293440400-2346678-124328',
-                client_id: 'ci', client_secret: 'cs').
-        to_return(status: 200, body: ft('refresh_token.json'))
-    end
-
     it 'requests access token by refresh token' do
-      @client.refresh('2.af3d55f8615fdfd9edb7c4b5ebdc3e32.604800.1293440400-2346678-124328')
-      a_post(:oauth, '/oauth/2.0/token', grant_type: 'refresh_token',
-             refresh_token: '2.af3d55f8615fdfd9edb7c4b5ebdc3e32.604800.1293440400-2346678-124328',
-             client_id: 'ci', client_secret: 'cs').should have_been_made
+      stub = stub_post(:oauth, '/oauth/2.0/token', grant_type: 'refresh_token',
+                                                   refresh_token: '2.af3d55f',
+                                                   client_id: 'ci', client_secret: 'cs')
+      stub.to_return(status: 200, body: ft('refresh_token.json'))
+      @client.refresh('2.af3d55f')
+      stub.should have_been_requested
     end
 
-    it 'requests access token by  refresh token with params' do
-      stub_post(:oauth, '/oauth/2.0/token', grant_type: 'refresh_token',
-                refresh_token: '2.af3d55f8615fdfd9edb7c4b5ebdc3e32.604800.1293440400-2346678-124328',
-                scope: 'basic netdisk', client_id: 'ci', client_secret: 'cs').
-        to_return(status: 200, body: ft('refresh_token.json'))
-      @client.refresh('2.af3d55f8615fdfd9edb7c4b5ebdc3e32.604800.1293440400-2346678-124328',
-                      scope: 'basic netdisk')
-      a_post(:oauth, '/oauth/2.0/token', grant_type: 'refresh_token',
-             refresh_token: '2.af3d55f8615fdfd9edb7c4b5ebdc3e32.604800.1293440400-2346678-124328',
-             scope: 'basic netdisk', client_id: 'ci', client_secret: 'cs').should have_been_made
+    it 'requests access token by refresh token with params' do
+      stub = stub_post(:oauth, '/oauth/2.0/token', grant_type: 'refresh_token',
+                                            refresh_token: '2.af3d55f8',
+                                            client_id: 'ci', client_secret: 'cs',
+                                            scope: 'basic netdisk')
+      stub.to_return(status: 200, body: ft('refresh_token.json'))
+      @client.refresh('2.af3d55f8', scope: 'basic netdisk')
+      stub.should have_been_requested
     end
 
     it 'responses access token by refresh token' do
-      result = @client.refresh('2.af3d55f8615fdfd9edb7c4b5ebdc3e32.604800.1293440400-2346678-124328')
+      stub = stub_post(:oauth, '/oauth/2.0/token', grant_type: 'refresh_token',
+                                            refresh_token: '2.af3d55f86',
+                                            client_id: 'ci', client_secret: 'cs')
+      stub.to_return(status: 200, body: ft('refresh_token.json'))
+      result = @client.refresh('2.af3d55f86')
       expect(result).to be_instance_of(Baidu::Session)
       expect(result).to respond_to(:access_token)
       expect(result).to respond_to(:refresh_token)
