@@ -1,0 +1,14 @@
+[
+  {
+    "uid1": "111",
+    "uid2": "222",
+    "are_friends": "1",
+    "are_friends_reverse": "0"
+  },
+  {
+    "uid1": " 333",
+    "uid2": "444",
+    "are_friends": "0",
+    "are_friends_reverse": "1"
+  }
+]

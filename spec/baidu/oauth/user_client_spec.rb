@@ -176,5 +176,48 @@ module Baidu
         expect(rest.size).to be(2)
       end
     end
+
+    describe '#are_friends' do
+      it 'requests with both string params' do
+        stub = stub_post(:oauth_rest,
+                         '/friends/areFriends',
+                         base_query.update(uids1: '111', uids2: '222'))
+        @client.are_friends '111', '222'
+        stub.should have_been_requested
+      end
+
+      it 'requests with both array params' do
+        stub = stub_post(:oauth_rest,
+                         '/friends/areFriends',
+                         base_query.update(uids1: '111,333', uids2: '222,444'))
+        @client.are_friends %w[111 333], %w[222 444]
+        stub.should have_been_requested
+      end
+
+      it 'requests with different param type' do
+        expect {
+          @client.are_friends '111', %w[222]
+        }.to raise_error ArgumentError, 'not the same types'
+      end
+
+      it 'requests with different size of array params' do
+        expect {
+          @client.are_friends %w[111], %w[222, 333]
+        }.to raise_error ArgumentError, 'not the same size of array'
+      end
+
+      it 'changes result with true or false' do
+        stub = stub_post(:oauth_rest,
+                         '/friends/areFriends',
+                         base_query.update(uids1: '111,333', uids2: '222,444'))
+        stub.to_return(body: ft('are_friends.json'))
+        rest = @client.are_friends %w[111 333], %w[222 444]
+        stub.should have_been_requested
+        expect(rest.first[:are_friends]).to be_true
+        expect(rest.first[:are_friends_reverse]).to be_false
+        expect(rest.last[:are_friends]).to be_false
+        expect(rest.last[:are_friends_reverse]).to be_true
+      end
+    end
   end
 end

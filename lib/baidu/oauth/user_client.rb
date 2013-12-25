@@ -62,6 +62,25 @@ module Baidu
         post "#{BASE_PATH}/friends/getFriends", nil, base_query.update(options)
       end
 
+      def are_friends(uids1, uids2)
+        body = base_query
+        case
+        when uids1.is_a?(String) && uids2.is_a?(String)
+          body[:uids1], body[:uids2] = uids1, uids2
+        when uids1.is_a?(Array)  && uids2.is_a?(Array)
+          raise ArgumentError, 'not the same size of array' unless uids1.size == uids2.size
+          body[:uids1], body[:uids2] = uids1.join(','), uids2.join(',')
+        else
+          raise ArgumentError, 'not the same types'
+        end
+
+        rest = post "#{BASE_PATH}/friends/areFriends", nil, body
+        rest.each do |h|
+          h[:are_friends] = h[:are_friends] == '1'
+          h[:are_friends_reverse] = h[:are_friends_reverse] == '1'
+        end
+      end
+
       private
 
       def base_query
