@@ -82,7 +82,7 @@ module Baidu
         stub.to_return(body: '{"result":"1"}')
         rest = @client.app_user?(uid: '456123')
         stub.should have_been_requested
-        expect(rest).to be_true
+        expect(rest).to eq(true)
       end
 
       it 'requests "isAppUser" for specified appid' do
@@ -92,7 +92,7 @@ module Baidu
         stub.to_return(body: '{"result":"0"}')
         rest = @client.app_user?(appid: '341256')
         stub.should have_been_requested
-        expect(rest).to be_false
+        expect(rest).to eq(false)
       end
     end
 
@@ -104,7 +104,7 @@ module Baidu
         stub.to_return(body: '{"result":"1"}')
         rest = @client.has_app_permission? 'netdisk'
         stub.should have_been_requested
-        expect(rest).to be_true
+        expect(rest).to eq(true)
       end
 
       it 'requests "hasAppPermission" for specified user' do
@@ -114,7 +114,7 @@ module Baidu
         stub.to_return(body: '{"result":"0"}')
         rest = @client.has_app_permission?('super_msg', '456123')
         stub.should have_been_requested
-        expect(rest).to be_false
+        expect(rest).to eq(false)
       end
     end
 
@@ -126,8 +126,8 @@ module Baidu
         stub.to_return(body: '{"basic":"1", "netdisk":"0"}')
         rest = @client.has_app_permissions 'netdisk,basic'
         stub.should have_been_requested
-        expect(rest[:basic]).to   be_true
-        expect(rest[:netdisk]).to be_false
+        expect(rest[:basic]).to   eq(true)
+        expect(rest[:netdisk]).to eq(false)
       end
 
       it 'requests "hasAppPermissions" api with array of perms' do
@@ -137,8 +137,8 @@ module Baidu
         stub.to_return(body: '{"basic":"1", "netdisk":"0"}')
         rest = @client.has_app_permissions %w[netdisk basic]
         stub.should have_been_requested
-        expect(rest[:basic]).to   be_true
-        expect(rest[:netdisk]).to be_false
+        expect(rest[:basic]).to   eq(true)
+        expect(rest[:netdisk]).to eq(false)
       end
 
       it 'requests "hasAppPermissions" for specified user' do
@@ -148,7 +148,7 @@ module Baidu
         stub.to_return(body: '{"super_msg":"0"}')
         rest = @client.has_app_permissions('super_msg', '456123')
         stub.should have_been_requested
-        expect(rest[:super_msg]).to be_false
+        expect(rest[:super_msg]).to eq(false)
       end
     end
 
@@ -213,10 +213,10 @@ module Baidu
         stub.to_return(body: ft('are_friends.json'))
         rest = @client.are_friends %w[111 333], %w[222 444]
         stub.should have_been_requested
-        expect(rest.first[:are_friends]).to be_true
-        expect(rest.first[:are_friends_reverse]).to be_false
-        expect(rest.last[:are_friends]).to be_false
-        expect(rest.last[:are_friends_reverse]).to be_true
+        expect(rest.first[:are_friends]).to eq(true)
+        expect(rest.first[:are_friends_reverse]).to eq(false)
+        expect(rest.last[:are_friends]).to eq(false)
+        expect(rest.last[:are_friends_reverse]).to eq(true)
       end
     end
 
@@ -228,7 +228,7 @@ module Baidu
         stub.to_return(body: '{"result":"1"}')
         rest = @client.expire_session
         stub.should have_been_requested
-        expect(rest).to be_true
+        expect(rest).to eq(true)
       end
 
       it 'requests "expireSession" api unsuccessfully' do
@@ -238,7 +238,7 @@ module Baidu
         stub.to_return(body: '{"result":"0"}')
         rest = @client.expire_session
         stub.should have_been_requested
-        expect(rest).to be_false
+        expect(rest).to eq(false)
       end
     end
   end
