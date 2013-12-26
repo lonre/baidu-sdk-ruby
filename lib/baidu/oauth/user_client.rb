@@ -87,6 +87,12 @@ module Baidu
         rest[:result] == '1'
       end
 
+      def revoke_authorization(uid=nil)
+        body = base_query.update(uid: uid)
+        rest = post "#{BASE_PATH}/passport/auth/revokeAuthorization", nil, body
+        rest[:result] == '1'
+      end
+
       private
 
       def base_query

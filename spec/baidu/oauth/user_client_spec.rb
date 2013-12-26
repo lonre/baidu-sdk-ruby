@@ -241,5 +241,37 @@ module Baidu
         expect(rest).to eq(false)
       end
     end
+
+    describe '#revoke_authorization' do
+      it 'requests "revokeAuthorization" api successfully' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/auth/revokeAuthorization',
+                         base_query)
+        stub.to_return(body: '{"result":"1"}')
+        rest = @client.revoke_authorization
+        stub.should have_been_requested
+        expect(rest).to eq(true)
+      end
+
+      it 'requests "revokeAuthorization" api with uid successfully' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/auth/revokeAuthorization',
+                         base_query.update({ uid: 123654 }))
+        stub.to_return(body: '{"result":"1"}')
+        rest = @client.revoke_authorization '123654'
+        stub.should have_been_requested
+        expect(rest).to eq(true)
+      end
+
+      it 'requests "revokeAuthorization" api unsuccessfully' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/auth/revokeAuthorization',
+                         base_query)
+        stub.to_return(body: '{"result":"0"}')
+        rest = @client.revoke_authorization
+        stub.should have_been_requested
+        expect(rest).to eq(false)
+      end
+    end
   end
 end
