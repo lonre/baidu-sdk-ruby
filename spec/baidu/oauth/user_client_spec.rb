@@ -273,5 +273,27 @@ module Baidu
         expect(rest).to eq(false)
       end
     end
+
+    describe 'when process error' do
+      it 'does not raise error' do
+        expect {
+          @client.send(:process_error, ['hi'])
+          @client.send(:process_error, {num: 0})
+          @client.send(:process_error, {error_code: 0})
+        }.not_to raise_error
+      end
+
+      it 'raises Baidu::Errors::Error' do
+        expect {
+          @client.send(:process_error, {error_code: 1})
+        }.to raise_error Baidu::Errors::Error
+      end
+
+      it 'raises Baidu::Errors::AuthError' do
+        expect {
+          @client.send(:process_error, {error_code: 110})
+        }.to raise_error Baidu::Errors::AuthError
+      end
+    end
   end
 end

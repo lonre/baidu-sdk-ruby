@@ -86,9 +86,28 @@ module Baidu
 
       def api_request(path, body={}, method=:post)
         body = base_query.update body
-        case method
-        when :post
-          post "#{BASE_PATH}#{path}", nil, body
+        rest =
+          case method
+          when :post
+            post "#{BASE_PATH}#{path}", nil, body
+          end
+        process_error rest
+        rest
+      end
+
+      # NOTE: Baidu api sucks, it may return error info with 200 status
+      # http://developer.baidu.com/wiki/index.php?title=%E7%99%BE%E5%BA%A6Open_API%E9%94%99%E8%AF%AF%E7%A0%81%E5%AE%9A%E4%B9%89
+      def process_error(data)
+        if data.is_a?(Hash) && data.has_key?(:error_code)
+          code = data[:error_code].to_s.strip
+          msg  = data[:error_msg]
+          unless code == '0'
+            if %w[102 110 111 112].include? code
+              raise Baidu::Errors::AuthError.new(msg, code)
+            else
+              raise Baidu::Errors::Error.new(msg, code)
+            end
+          end
         end
       end
     end
