@@ -81,6 +81,12 @@ module Baidu
         end
       end
 
+      def expire_session
+        body = base_query
+        rest = post "#{BASE_PATH}/passport/auth/expireSession", nil, body
+        rest[:result] == '1'
+      end
+
       private
 
       def base_query

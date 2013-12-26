@@ -219,5 +219,27 @@ module Baidu
         expect(rest.last[:are_friends_reverse]).to be_true
       end
     end
+
+    describe '#expire_session' do
+      it 'requests "expireSession" api successfully' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/auth/expireSession',
+                         base_query)
+        stub.to_return(body: '{"result":"1"}')
+        rest = @client.expire_session
+        stub.should have_been_requested
+        expect(rest).to be_true
+      end
+
+      it 'requests "expireSession" api unsuccessfully' do
+        stub = stub_post(:oauth_rest,
+                         '/passport/auth/expireSession',
+                         base_query)
+        stub.to_return(body: '{"result":"0"}')
+        rest = @client.expire_session
+        stub.should have_been_requested
+        expect(rest).to be_false
+      end
+    end
   end
 end
