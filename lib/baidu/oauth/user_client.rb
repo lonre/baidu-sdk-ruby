@@ -16,54 +16,41 @@ module Baidu
       end
 
       def get_logged_in_user
-        post "#{BASE_PATH}/passport/users/getLoggedInUser", nil, base_query
+        api_request '/passport/users/getLoggedInUser'
       end
 
       def get_info(options={})
-        body          = base_query
-        body[:uid]    = options[:uid]
-        body[:fields] = options[:fields]
-
-        post "#{BASE_PATH}/passport/users/getInfo", nil, body
+        api_request '/passport/users/getInfo', options
       end
 
       def app_user?(options={})
-        body         = base_query
-        body[:uid]   = options[:uid]
-        body[:appid] = options[:appid]
-
-        rest = post "#{BASE_PATH}/passport/users/isAppUser", nil, body
+        rest = api_request '/passport/users/isAppUser', options
         rest[:result] == '1'
       end
 
       def has_app_permission?(ext_perm, uid=nil)
-        body            = base_query
-        body[:ext_perm] = ext_perm
-        body[:uid]      = uid
-
-        rest = post "#{BASE_PATH}/passport/users/hasAppPermission", nil, body
+        body = { ext_perm: ext_perm, uid: uid }
+        rest = api_request '/passport/users/hasAppPermission', body
         rest[:result] == '1'
       end
 
       def has_app_permissions(ext_perms, uid=nil)
-        body             = base_query
-        body[:ext_perms] = ext_perms
+        body = { ext_perms: ext_perms, uid: uid }
         if ext_perms.is_a? Array
           body[:ext_perms] = ext_perms.join ','
         end
-        body[:uid]       = uid
 
-        rest = post "#{BASE_PATH}/passport/users/hasAppPermissions", nil, body
+        rest = api_request '/passport/users/hasAppPermissions', body
         rest.each { |k, v| rest[k] = v == '1' }
       end
 
       # TODO: check return value
       def get_friends(options={})
-        post "#{BASE_PATH}/friends/getFriends", nil, base_query.update(options)
+        api_request '/friends/getFriends', options
       end
 
       def are_friends(uids1, uids2)
-        body = base_query
+        body = {}
         case
         when uids1.is_a?(String) && uids2.is_a?(String)
           body[:uids1], body[:uids2] = uids1, uids2
@@ -74,7 +61,7 @@ module Baidu
           raise ArgumentError, 'not the same types'
         end
 
-        rest = post "#{BASE_PATH}/friends/areFriends", nil, body
+        rest = api_request '/friends/areFriends', body
         rest.each do |h|
           h[:are_friends] = h[:are_friends] == '1'
           h[:are_friends_reverse] = h[:are_friends_reverse] == '1'
@@ -82,14 +69,12 @@ module Baidu
       end
 
       def expire_session
-        body = base_query
-        rest = post "#{BASE_PATH}/passport/auth/expireSession", nil, body
+        rest = api_request '/passport/auth/expireSession'
         rest[:result] == '1'
       end
 
       def revoke_authorization(uid=nil)
-        body = base_query.update(uid: uid)
-        rest = post "#{BASE_PATH}/passport/auth/revokeAuthorization", nil, body
+        rest = api_request('/passport/auth/revokeAuthorization', {uid: uid})
         rest[:result] == '1'
       end
 
@@ -97,6 +82,14 @@ module Baidu
 
       def base_query
         { access_token: @access_token }
+      end
+
+      def api_request(path, body={}, method=:post)
+        body = base_query.update body
+        case method
+        when :post
+          post "#{BASE_PATH}#{path}", nil, body
+        end
       end
     end
   end
