@@ -78,18 +78,24 @@ module Baidu
         rest[:result] == '1'
       end
 
+      def query_ip(*ips)
+        api_request('/iplib/query', { ip: ips.join(',') }, :get)
+      end
+
       private
 
       def base_query
         { access_token: @access_token }
       end
 
-      def api_request(path, body={}, method=:post)
-        body = base_query.update body
+      def api_request(path, params={}, method=:post)
+        body = base_query.update params
         rest =
           case method
           when :post
             post "#{BASE_PATH}#{path}", nil, body
+          when :get
+            get "#{BASE_PATH}#{path}", body
           end
         process_error rest
         rest

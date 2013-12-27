@@ -274,6 +274,34 @@ module Baidu
       end
     end
 
+    describe '#query_ip' do
+      it 'requests single ip' do
+        stub = stub_get(:oauth_rest,
+                         '/iplib/query',
+                         base_query.update({ ip: '111.222.111.222' }))
+        stub.to_return(body: '{"111.222.111.222":{"province":"\u5e7f\u4e1c","city":"\u6df1\u5733"}}')
+        rest = @client.query_ip '111.222.111.222'
+        stub.should have_been_requested
+        expect(rest).to have_key(:'111.222.111.222')
+      end
+
+      it 'requests multiple ips' do
+        stub = stub_get(:oauth_rest,
+                         '/iplib/query',
+                         base_query.update({ ip: '111.222.111.222,8.8.8.8' }))
+        @client.query_ip '111.222.111.222', '8.8.8.8'
+        stub.should have_been_requested
+      end
+
+      it 'requests multiple ips as array' do
+        stub = stub_get(:oauth_rest,
+                         '/iplib/query',
+                         base_query.update({ ip: '111.222.111.222,8.8.8.8,8.8.4.4' }))
+        @client.query_ip ['111.222.111.222', '8.8.8.8', '8.8.4.4']
+        stub.should have_been_requested
+      end
+    end
+
     describe 'when process error' do
       it 'does not raise error' do
         expect {
