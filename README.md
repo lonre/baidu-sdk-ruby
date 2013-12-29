@@ -149,6 +149,19 @@ get '/auth/callback' do
 end
 ```
 
+### REST API
+通过百度开放平台提供的 REST API，第三方应用可以获取到百度用户的用户资料、好友关系等基本信息，以及今后百度开放的其他任何数据，但前提是应用必须获得到百度开放平台和百度用户的授权。
+
+当前实现了用户信息类接口、好友关系类接口、用户授权类接口和工具类接口。
+
+```ruby
+rest_client = Baidu::OAuth::RESTClient.new('my_token...')
+puts rest_client.get_logged_in_user
+puts rest_client.get_info
+puts rest_client.expire_session
+# puts rest_client.revoke_authorization
+```
+
 ## PCS
 要使用 PCS 必须到 [百度开发者中心](http://developer.baidu.com/console) 开启指定应用的 PCS API 权限，参考 [开通PCS API权限](http://developer.baidu.com/wiki/index.php?title=docs/pcs/guide/api_approve)，并获取所设置的文件目录。
 

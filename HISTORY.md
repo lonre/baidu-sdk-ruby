@@ -1,3 +1,16 @@
+## 0.0.3 (2013-12-30)
+* 添加部分 REST API, `Baidu::OAuth::RESTClient`
+  * get_logged_in_user
+  * get_info
+  * app_user?
+  * has_app_permission?
+  * has_app_permissions
+  * get_friends
+  * are_friends
+  * expire_session
+  * revoke_authorization
+  * query_ip
+
 ## 0.0.2 (2013-12-06)
 * **OAuth** 添加 Implicit Grant 授权流程
 * **OAuth** 添加 Client Credentials 授权流程
