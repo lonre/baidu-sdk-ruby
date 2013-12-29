@@ -2,7 +2,7 @@
 
 module Baidu
   module OAuth
-    class UserClient
+    class RESTClient
       include Baidu::Support::Request
 
       def initialize(access_token_or_session)

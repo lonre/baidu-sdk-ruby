@@ -1,6 +1,6 @@
 require 'baidu/core'
 require 'baidu/oauth/client'
-require 'baidu/oauth/user_client'
+require 'baidu/oauth/rest_client'
 
 module Baidu
   module OAuth

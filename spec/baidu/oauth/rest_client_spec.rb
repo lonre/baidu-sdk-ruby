@@ -4,36 +4,36 @@ require 'spec_helper'
 require 'baidu/oauth'
 
 module Baidu
-  describe OAuth::UserClient do
+  describe OAuth::RESTClient do
     let(:base_query) { { access_token: '3.xxx.yyy' } }
 
     before do
-      @client = OAuth::UserClient.new(base_query[:access_token])
+      @client = OAuth::RESTClient.new(base_query[:access_token])
     end
 
     describe '#initialize' do
       it 'inits with access token string' do
-        client = OAuth::UserClient.new('xyz_at')
-        expect(client).to be_a(OAuth::UserClient)
+        client = OAuth::RESTClient.new('xyz_at')
+        expect(client).to be_a(OAuth::RESTClient)
         expect(client.instance_variable_get(:@access_token)).to eq('xyz_at')
       end
 
       it 'inits with Baidu::Session' do
         session = Baidu::Session.new
         session.access_token = 'zyx_at'
-        client = OAuth::UserClient.new(session)
-        expect(client).to be_a(OAuth::UserClient)
+        client = OAuth::RESTClient.new(session)
+        expect(client).to be_a(OAuth::RESTClient)
         expect(client.instance_variable_get(:@access_token)).to eq('zyx_at')
       end
 
       it 'provides base uri' do
-        client = OAuth::UserClient.new('xyz_at')
+        client = OAuth::RESTClient.new('xyz_at')
         expect(client.instance_variable_get(:@site)).to eq('https://openapi.baidu.com')
       end
 
       it 'raises error with other params' do
         expect {
-          OAuth::UserClient.new({})
+          OAuth::RESTClient.new({})
         }.to raise_error(ArgumentError, 'need a String or Baidu::Session')
       end
     end
