@@ -237,10 +237,18 @@ describe Baidu::OAuth::Client do
   context '#token_info' do
     it 'requests token info' do
       stub = stub_post(:oauth, '/oauth/2.0/tokeninfo', access_token: 'xxxx').
-          to_return(status: 200, body: ft('token_info.json'))
+               to_return(status: 200, body: ft('token_info.json'))
       rest = @client.token_info('xxxx')
       stub.should have_been_requested
       expect(rest).to be_instance_of(Hash)
+    end
+
+    it 'requests token info with expired or invalid access token' do
+      stub = stub_post(:oauth, '/oauth/2.0/tokeninfo', access_token: 'expired_or_invalid_access_token').
+               to_return(status: 400, body: ft('token_info_400.json'))
+      rest = @client.token_info('expired_or_invalid_access_token')
+      stub.should have_been_requested
+      expect(rest).to be_nil
     end
   end
 end

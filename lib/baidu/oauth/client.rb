@@ -97,12 +97,18 @@ module Baidu
       #   :expires_in  Access Token剩余的有效时间，以秒为单位
       #
       # @param [String] access_token 授权之后应用得到的Access Token
-      # @return [Hash]
+      # @return [Hash] 如上描述
+      # @return [nil]  若参数中传递的 Access Token 已经过期或者无效，则返回 nil
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/tokeninfo 校验Access Token
       # @see http://developer.baidu.com/wiki/index.php?title=docs/oauth/list 权限列表
       def token_info(access_token)
         body = { access_token: access_token }
-        return post Baidu::OAuth::TOKEN_INFO_ENDPOINT, nil, body
+        begin
+          post Baidu::OAuth::TOKEN_INFO_ENDPOINT, nil, body
+        rescue Baidu::Errors::ClientError => e
+          return nil if e.code == 'invalid_grant'
+          raise e
+        end
       end
     end
   end
