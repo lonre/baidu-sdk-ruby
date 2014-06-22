@@ -1044,8 +1044,9 @@ module Baidu
         retry_times = 0
         begin
           yield
-        rescue
+        rescue => e
           raise if (retry_times += 1) > max_retry_times
+          warn "#{self.class.name} error occured: #{e.inspect}, will retry in #{waitsec} seconds for the #{retry_times}th time."
           sleep waitsec
           retry
         end
