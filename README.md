@@ -18,7 +18,7 @@ Unofficial Baidu REST API SDK for Ruby.
 
     $ gem install baidu-sdk
 
-`baidu-sdk` 当前支持 Ruby(MRI) 版本：1.9.3, 2.0.0
+`baidu-sdk` 当前支持 Ruby(MRI) 版本：1.9.3, 2.0, 2.1
 
 ## 使用简介
 [baidu-sdk api doc](http://rubydoc.info/gems/baidu-sdk/frames)
